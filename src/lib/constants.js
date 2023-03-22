@@ -1,2 +1,2 @@
-export const DAPP_NAME = "Dapp";
+export const DAPP_NAME = "My Phat dApp";
 
