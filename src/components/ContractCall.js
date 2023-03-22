@@ -39,32 +39,7 @@ export function ContractCall() {
       // codeHash on phat-cb
       // const codeHash = "0x021907a3b977388df0cf9d098438c42d0369cc0791ddf6b4043d69de11d57dd8"
 
-      /*
-      on polkadot.js.org/apps chain data:
-      phalaRegistry.contractKeys("0xcab37b387b2e15c6758dcade3f340d16aca3e0c0f18c94e485c103442a8bbcfa")
-        --> "0x1a83b5232d06181c5056d150623e24865b32dc91a6e1baa742087a005ff8fb1b"
-      */
-
-      /*
-      // Step not needed, we'll use phatRegistry.getContractKey instead later
-      const contractKeyQuery = await api.query.phalaRegistry.contractKeys(contractId)
-      if (!contractKeyQuery) {
-        throw new Error('Contract not found in cluster.')
-      }
-      console.log("contractKeyQuery",contractKeyQuery.unwrap().toHuman())
-      // --> 0x1a83b5232d06181c5056d150623e24865b32dc91a6e1baa742087a005ff8fb1b
-      */
-
       const phatRegistry = await OnChainRegistry.create(api)
-        /*, { 
-        //pruntimeURL: 'https://phat-qc.01.do/node-1-1/'
-        //pruntimeURL: 'https://phat-qc.01.do/node-1-2/'
-        //pruntimeURL: 'https://phat-qc.01.do/node-3-1/'
-        //pruntimeURL: 'https://phat-qc.01.do/node-3-2/'
-        //pruntimeURL: 'https://phat-fr.01.do/node-1/'
-        pruntimeURL: 'https://phat-fr.01.do/node-2/'
-      }*/
-     // )
 
       const abi = JSON.parse(JSON.stringify(metadata))
       const contractKey = await phatRegistry.getContractKey(contractId)
@@ -129,37 +104,6 @@ export function ContractCall() {
       }
     })
   };
-
-
-  /**
-   * 
-  //no need to sign certificate manually with the latest sdk
-  const onSignCertificate = async () => {
-    console.log("onSignCertificate")
-    if (account && api) {
-      try {
-        const signer = await getSigner(account);
-        console.log("setCertificateData")
-        // Save certificate data to state, or anywhere else you want like local storage
-        const keyring = new Keyring()
-        const alice_pair = keyring.addFromUri("//Alice");
-        setCertificateData(
-          await signCertificate({
-            api,
-            account,
-            signer,
-          })
-        );
-        console.log("Certificate signed")
-        //toaster.positive("Certificate signed", {});
-      } catch (err) {
-        console.log(err)
-        //toaster.negative((err).message, {});
-      }
-    }
-  };
-  */
-
 
   return (<>
         <Box>
