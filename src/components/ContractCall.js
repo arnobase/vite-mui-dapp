@@ -29,36 +29,37 @@ export function ContractCall() {
   }, [api])
   
   const loadContract = async () => {
-    try {
-      setProvider('wss://phat-beta-node.phala.network/khala/ws')
+    
+        try {
+          setProvider('wss://phat-beta-node.phala.network/khala/ws')
+          
+          //const pruntimeURL="https://phat-fr.01.do/node-1/"
+
+          // contract ID on phat-cb (contract address on polkadot.js.org/apps)
+          const contractId = "0xcab37b387b2e15c6758dcade3f340d16aca3e0c0f18c94e485c103442a8bbcfa"
+          // codeHash on phat-cb
+          //   const codeHash = "0x021907a3b977388df0cf9d098438c42d0369cc0791ddf6b4043d69de11d57dd8"
+
+          const phatRegistry = await OnChainRegistry.create(api)
+
+          const abi = JSON.parse(JSON.stringify(metadata))
+          const contractKey = await phatRegistry.getContractKey(contractId)
+
+          console.log("contractKey",contractKey)
+          // --> 0x1a83b5232d06181c5056d150623e24865b32dc91a6e1baa742087a005ff8fb1b
+
+          const contract = new PinkContractPromise(api, phatRegistry, abi, contractId, contractKey)
+
+          console.log("contract:",contract.abi.messages.map((e)=>{return e.method}))
+          // contract: Array [ "get", "setValue" ]
+
+          setContract(contract)
+          console.log("Contract loaded successfully");
+        } catch (err) {
+          console.log("Error in contract loading",err);
+          throw err;
+        }
       
-      //const pruntimeURL="https://phat-fr.01.do/node-1/"
-
-      // contract ID on phat-cb (contract address on polkadot.js.org/apps)
-      const contractId = "0xcab37b387b2e15c6758dcade3f340d16aca3e0c0f18c94e485c103442a8bbcfa"
-      // codeHash on phat-cb
-      // const codeHash = "0x021907a3b977388df0cf9d098438c42d0369cc0791ddf6b4043d69de11d57dd8"
-
-      const phatRegistry = await OnChainRegistry.create(api)
-
-      const abi = JSON.parse(JSON.stringify(metadata))
-      const contractKey = await phatRegistry.getContractKey(contractId)
-
-      console.log("contractKey",contractKey)
-      // --> 0x1a83b5232d06181c5056d150623e24865b32dc91a6e1baa742087a005ff8fb1b
-
-      const contract = new PinkContractPromise(api, phatRegistry, abi, contractId, contractKey)
-
-      console.log("contract:",contract.abi.messages.map((e)=>{return e.method}))
-      // contract: Array [ "get", "setValue" ]
-
-      setContract(contract)
-      console.log("Contract loaded successfully");
-
-    } catch (err) {
-      console.log("Error in contract loading",err);
-      throw err;
-    }
   };
 
   // query vith beta sdk
@@ -107,14 +108,14 @@ export function ContractCall() {
 
   return (<>
         <Box>
-          <button disabled={!contract} onClick={doQuery}>
+          <button disabled={!(contract)} onClick={doQuery}>
             do Query
           </button>
           <span>{phatMessage}</span>
         </Box>
         <Box>
           <input type="text" ref={messageInput}></input>
-          <button disabled={!contract} onClick={() => doTx(messageInput.current.value)}>
+          <button disabled={!(contract&&account?.address)} onClick={() => doTx(messageInput.current.value)}>
             do Tx
           </button>
         </Box>
